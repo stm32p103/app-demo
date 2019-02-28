@@ -2,70 +2,70 @@ import { Get, Post, Patch, Delete, Body, Controller, Param, HttpException, HttpS
 import { ApiUseTags } from '@nestjs/swagger';
 
 //import { GetQueryDto } from '../common/dto';
-import { Item } from '../entities';
-import { ItemService } from '../services';
-import { ItemDto } from '../dtos';
+import { Location } from '../entities';
+import { LocationService } from '../services';
+import { LocationDto } from '../dtos';
 
-@ApiUseTags('Item')
-@Controller('item')
-export class ItemController {
-    constructor(private readonly items: ItemService ) {}
+@ApiUseTags('Location')
+@Controller('location')
+export class LocationController {
+    constructor(private readonly locations: LocationService ) {}
     @Get('/joinables')
     getJoinables(): string[] {
-        return Item.Joinables;
+        return Location.Joinables;
     }
     
     @Get()
-    async findAll():  Promise<Item[]> {
+    async findAll():  Promise<Location[]> {
 //        let join = [];@Query() option?: GetQueryDto
 //        if( option && option.join ) {
 //            join = option.join.split(',');
 //        }{ join: join }
-        return await this.items.findAll();
+        return await this.locations.findAll();
     }
 //    , @Query() option?: GetQueryDto 
     @Get(':id')
-    async getById( @Param('id') id: number ):  Promise<Item> {
+    async getById( @Param('id') id: number ):  Promise<Location> {
 //        let join = [];
 //        if( option && option.join ) {
 //            join = option.joinStrings;
 //        }
-        let item;
+        let location;
         try {
-            item = await this.items.findOneById( id );
+            location = await this.locations.findOneById( id );
         } catch( e ) {
             throw new HttpException( 'Entity Not Found', HttpStatus.NOT_FOUND );
         }
 
-        return item;
+        return location;
     }
     
     @Post()
-    async create( @Body() dto: ItemDto ): Promise<Item> {
-        let item: Item;
-        item = await this.items.create( new Item( dto ) );
-        return item;
+    async create( @Body() dto: LocationDto ): Promise<Location> {
+        let location: Location;
+        location = await this.locations.create( new Location( dto ) );
+        return location;
     }
 
     /* ------------------------------------------------------------------------
      * 部分変更
      * --------------------------------------------------------------------- */
     @Patch(':id')
-    async update( @Param('id') id: number, @Body() dto: ItemDto ): Promise<Item> {
-        let item: Item;
-        await this.items.update( id, dto );
+    async update( @Param('id') id: number, @Body() dto: LocationDto ): Promise<Location> {
+        let location: Location;
+        await this.locations.update( id, dto );
         
         try {
-            item = await this.items.findOneById( id );
+            location = await this.locations.findOneById( id );
         } catch( e ) {
             throw new HttpException( 'Entity Not Found', HttpStatus.NOT_FOUND );
         }
 
-        return item;
+        return location;
     }
 
     @Delete(':id')
     async delete( @Param('id') id: number ): Promise<void> {
-        return await this.items.delete( [ id ] );
+        return await this.locations.delete( [ id ] );
     }
 }

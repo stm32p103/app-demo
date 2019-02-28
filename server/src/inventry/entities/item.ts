@@ -22,7 +22,7 @@ export class Item extends EntityCommon {
     @Column( { length: 128 } )
     name: string;
     
-    @Column( { length: 256 } )
+    @Column( { length: 256, unique: true } )
     code: string;
 
     // ------------------------------------------------------------------------
