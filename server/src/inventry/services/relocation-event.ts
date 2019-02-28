@@ -18,7 +18,7 @@ export class RelocationEventService {
 
     async add( itemCode: string, locationCode: string ): Promise<RelocationEvent> {
         const item = await this.items.findOneOrFail( { where: { code: itemCode }, select: [ 'id' ] } );
-        const location = await this.items.findOneOrFail( { where: { code: locationCode }, select: [ 'id' ] } );
+        const location = await this.locations.findOneOrFail( { where: { code: locationCode }, select: [ 'id' ] } );
         
         const result = await this.events.insert( new RelocationEvent( { iid: item.id, lid: location.id } ) );
         const id = result.identifiers[0].id;
