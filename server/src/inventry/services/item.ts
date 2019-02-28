@@ -25,8 +25,9 @@ export class ItemService {
         return await this.items.findOne( id );
     }
     
-    async findOneById( id: number, option?: { join?: string[] } ): Promise<Item> {
-        return await this.items.findOneOrFail( id, { relations: [] } );
+    async findOneById( id: number, option: { join?: string[] } = {} ): Promise<Item> {
+        // tentative
+        return await this.items.findOneOrFail( id, { relations: ( option.join ? option.join : [] ) } );
     }
     
     async findAll( option?: { join?: string[] } ): Promise<Item[]> {

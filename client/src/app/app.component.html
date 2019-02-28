@@ -1,20 +1,142 @@
-<!--The content below is only a placeholder and can be replaced.-->
-<div style="text-align:center">
-  <h1>
-    Welcome to {{ title }}!
-  </h1>
-  <img width="300" alt="Angular Logo" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNTAgMjUwIj4KICAgIDxwYXRoIGZpbGw9IiNERDAwMzEiIGQ9Ik0xMjUgMzBMMzEuOSA2My4ybDE0LjIgMTIzLjFMMTI1IDIzMGw3OC45LTQzLjcgMTQuMi0xMjMuMXoiIC8+CiAgICA8cGF0aCBmaWxsPSIjQzMwMDJGIiBkPSJNMTI1IDMwdjIyLjItLjFWMjMwbDc4LjktNDMuNyAxNC4yLTEyMy4xTDEyNSAzMHoiIC8+CiAgICA8cGF0aCAgZmlsbD0iI0ZGRkZGRiIgZD0iTTEyNSA1Mi4xTDY2LjggMTgyLjZoMjEuN2wxMS43LTI5LjJoNDkuNGwxMS43IDI5LjJIMTgzTDEyNSA1Mi4xem0xNyA4My4zaC0zNGwxNy00MC45IDE3IDQwLjl6IiAvPgogIDwvc3ZnPg==">
-</div>
-<h2>Here are some links to help you start: </h2>
-<ul>
-  <li>
-    <h2><a target="_blank" rel="noopener" href="https://angular.io/tutorial">Tour of Heroes</a></h2>
-  </li>
-  <li>
-    <h2><a target="_blank" rel="noopener" href="https://angular.io/cli">CLI Documentation</a></h2>
-  </li>
-  <li>
-    <h2><a target="_blank" rel="noopener" href="https://blog.angular.io/">Angular blog</a></h2>
-  </li>
-</ul>
+<!-- コンポーネントをもっと分割すること…似たようなことの繰り返しは禁物 -->
+<div class="ui-g ui-g-nopad">
+<!-- START -->
+<!-- Item -->
+<div class="ui-g-4 ui-g-nopad">
+	<p-card header="備品登録" class="ui-g-12">
+		<div class="ui-g ui-fluid">
+			<div class="ui-g-12">
+				<div class="ui-inputgroup">
+					<span class="ui-inputgroup-addon"><i class="fa fa-archive"></i></span>
+					<input type="text" pInputText placeholder="名称" [(ngModel)]="itemName">     
+		    </div>
+		  </div>
+			<div class="ui-g-12">
+				<div class="ui-inputgroup">
+					<span class="ui-inputgroup-addon"><i class="fa fa-barcode"></i></span>
+					<input type="text" pInputText placeholder="コード" [(ngModel)]="itemCode">     
+		    </div>
+		  </div>
+		</div>
+		<div class="ui-g ui-fluid">
+			<p-button label="登録" (click)="createItem()" class="ui-g-4"></p-button>
+		</div>
+	</p-card>
 
+	<p-card header="備品一覧" class="ui-g-12">
+		<div class="ui-g ui-fluid">
+			<p-button label="更新" (click)="getItems()" class="ui-g-4"></p-button>
+		</div>
+	
+		<div class="ui-g ui-g-nopad">
+			<p-table [columns]="itemCols" [value]="items" class="ui-g-12" selectionMode="single" (onRowSelect)="onItemSelect($event)">
+		    <ng-template pTemplate="header" let-columns>
+	        <tr>
+            <th *ngFor="let col of columns">
+                {{col}}
+            </th>
+	        </tr>
+		    </ng-template>
+		    <ng-template pTemplate="body" let-rowData let-columns="columns">
+	        <tr [pSelectableRow]="rowData">
+            <td *ngFor="let col of columns">
+                {{rowData[col]}}
+            </td>
+	        </tr>
+		    </ng-template>
+			</p-table>
+		</div>
+	</p-card>
+</div>
+<!-- RelocationEvent -->
+<div class="ui-g-4 ui-g-nopad">
+	<p-card header="移動" class="ui-g-12">
+		<div class="ui-g ui-fluid">
+			<div class="ui-g-12">
+				<div class="ui-inputgroup">
+					<span class="ui-inputgroup-addon"><i class="fa fa-barcode"></i></span>
+					<input type="text" pInputText placeholder="移動する備品のコード" [(ngModel)]="targetItemCode">     
+		    </div>
+		  </div>
+			<div class="ui-g-12">
+				<div class="ui-inputgroup">
+					<span class="ui-inputgroup-addon"><i class="fa fa-barcode"></i></span>
+					<input type="text" pInputText placeholder="移動先の場所のコード" [(ngModel)]="targetLocationCode">     
+		    </div>
+		  </div>
+		</div>
+		<div class="ui-g ui-fluid">
+			<p-button label="登録" (click)="createRelocationEvent()" class="ui-g-4"></p-button>
+		</div>
+	</p-card>
+	
+	<p-card *ngIf="selectedItem" header="{{selectedItem.name}}の移動履歴" class="ui-g-12">
+		<div class="ui-g ui-g-nopad">
+			<p-table [value]="selectedItem.relocationEvents" class="ui-g-12">
+			    <ng-template pTemplate="header">
+			        <tr>
+			            <th>date</th>
+			            <th>code</th>
+			            <th>name</th>
+			        </tr>
+			    </ng-template>
+			    <ng-template pTemplate="body" let-event>
+			        <tr>
+			            <td>{{event.createdAt | date:"yy/MM/dd hh:mm:ss"}}</td>
+			            <td>{{event.location.code}}</td>
+			            <td>{{event.location.name}}</td>
+			        </tr>
+			    </ng-template>
+			</p-table>
+		</div>
+	</p-card>
+</div>
+<!-- Location -->
+<div class="ui-g-4 ui-g-nopad">
+	<p-card header="場所登録" class="ui-g-12">
+		<div class="ui-g ui-fluid">
+			<div class="ui-g-12">
+				<div class="ui-inputgroup">
+					<span class="ui-inputgroup-addon"><i class="fa fa-building"></i></span>
+					<input type="text" pInputText placeholder="名称" [(ngModel)]="locationName">     
+		    </div>
+		  </div>
+			<div class="ui-g-12">
+				<div class="ui-inputgroup">
+					<span class="ui-inputgroup-addon"><i class="fa fa-barcode"></i></span>
+					<input type="text" pInputText placeholder="コード" [(ngModel)]="locationCode">     
+		    </div>
+		  </div>
+		</div>
+		<div class="ui-g ui-fluid">
+			<p-button label="登録" (click)="createLocation()" class="ui-g-4"></p-button>
+		</div>
+	</p-card>
+
+	<p-card header="場所一覧" class="ui-g-12">
+		<div class="ui-g ui-fluid">
+			<p-button label="更新" (click)="getLocations()" class="ui-g-4"></p-button>
+		</div>
+	
+		<div class="ui-g ui-g-nopad">
+			<p-table [columns]="locationCols" [value]="locations" class="ui-g-12" selectionMode="single" (onRowSelect)="onLocationSelect($event)">
+		    <ng-template pTemplate="header" let-columns>
+	        <tr>
+            <th *ngFor="let col of columns">
+                {{col}}
+            </th>
+	        </tr>
+		    </ng-template>
+		    <ng-template pTemplate="body" let-rowData let-columns="columns">
+	        <tr [pSelectableRow]="rowData">
+            <td *ngFor="let col of columns">
+                {{rowData[col]}}
+            </td>
+	        </tr>
+		    </ng-template>
+			</p-table>
+		</div>
+	</p-card>
+</div>
+<!-- END -->
+</div>

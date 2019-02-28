@@ -15,7 +15,8 @@ import { Location } from './location';
 import { RelocationEvent } from './relocation-event';
 
 /* ############################################################################
- * location, relocationEventsはどちらも集約の内部にあると考えて、Joinできるように設定。
+ * relocationEventsはどちらも集約の内部にあると考えて、Joinできるように設定。
+ * 最新の位置が別途必要になった場合、テーブルを分けておき、relocation event発生で更新する。
  * ######################################################################### */
 @Entity()
 export class Item extends EntityCommon {
@@ -25,11 +26,6 @@ export class Item extends EntityCommon {
     @Column( { length: 256, unique: true } )
     code: string;
 
-    // ------------------------------------------------------------------------
-    // Location
-    @Joinable()
-    @ManyToOne( type=>Location )
-    readonly location?: Location;
     // ------------------------------------------------------------------------
     // RelocationEvent
     @Joinable()

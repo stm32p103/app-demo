@@ -17,22 +17,15 @@ export class ItemController {
     
     @Get()
     async findAll():  Promise<Item[]> {
-//        let join = [];@Query() option?: GetQueryDto
-//        if( option && option.join ) {
-//            join = option.join.split(',');
-//        }{ join: join }
         return await this.items.findAll();
     }
-//    , @Query() option?: GetQueryDto 
+    
     @Get(':id')
     async getById( @Param('id') id: number ):  Promise<Item> {
-//        let join = [];
-//        if( option && option.join ) {
-//            join = option.joinStrings;
-//        }
         let item;
         try {
-            item = await this.items.findOneById( id );
+            // tentative
+            item = await this.items.findOneById( id, { join: [ 'relocationEvents', 'relocationEvents.location' ] } );
         } catch( e ) {
             throw new HttpException( 'Entity Not Found', HttpStatus.NOT_FOUND );
         }

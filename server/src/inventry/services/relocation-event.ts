@@ -17,12 +17,18 @@ export class RelocationEventService {
     ) {}
 
     async add( itemCode: string, locationCode: string ): Promise<RelocationEvent> {
+        console.log( itemCode );
+        console.log( locationCode );
+
         const item = await this.items.findOneOrFail( { where: { code: itemCode }, select: [ 'id' ] } );
         const location = await this.locations.findOneOrFail( { where: { code: locationCode }, select: [ 'id' ] } );
         
         const result = await this.events.insert( new RelocationEvent( { iid: item.id, lid: location.id } ) );
         const id = result.identifiers[0].id;
-        return await this.events.findOne( id );
+        
+        // 暫定でJoin結果を返す。本当は別のところに必要
+        
+        return await this.events.findOne( id, { relations: [ 'item', 'item.relocationEvents', 'item.relocationEvents.location'] } );
     }
 
     async delete( ids: number[] ): Promise<void> {
