@@ -60,5 +60,8 @@
     },
     "coverageDirectory": "../coverage",
     "testEnvironment": "node"
+  },
+	"resolutions": {
+    "nexe/fuse-box": "3.1.0"
   }
 }

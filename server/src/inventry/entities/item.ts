@@ -27,6 +27,11 @@ export class Item extends EntityCommon {
     code: string;
 
     // ------------------------------------------------------------------------
+    // Location
+    @Joinable()
+    @ManyToOne( type=>Location )
+    readonly location?: Location;
+    // ------------------------------------------------------------------------
     // RelocationEvent
     @Joinable()
     @OneToMany( type=>RelocationEvent, relocationEvent=>relocationEvent.item )
